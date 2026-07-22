@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'orders_page.dart';
+import 'stocks_page.dart';
+import 'income_page.dart';
+import 'account_page.dart';
 
 void main() {
   runApp(const MyPrincessStore());
@@ -11,97 +15,83 @@ class MyPrincessStore extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'My Princess Store',
+      title: "My Princess Store",
       theme: ThemeData(
-        primarySwatch: Colors.black,
+        fontFamily: "Arial",
       ),
-      home: const SplashScreen(),
+      home: const MainScreen(),
     );
   }
 }
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
+class _MainScreenState extends State<MainScreen> {
 
-  late AnimationController controller;
-  late Animation<double> animation;
+  int currentIndex = 0;
 
-  @override
-  void initState() {
-    super.initState();
-
-    controller = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    );
-
-    animation = CurvedAnimation(
-      parent: controller,
-      curve: Curves.easeInOut,
-    );
-
-    controller.forward();
-
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ),
-      );
-    });
-  }
+  final pages = const [
+    HomePage(),
+    OrdersPage(),
+    StocksPage(),
+    IncomePage(),
+    AccountPage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: ScaleTransition(
-        scale: animation,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
 
-              Text(
-                "PRINCE SHARMA",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
+      body: pages[currentIndex],
 
-              SizedBox(height: 20),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex,
 
-              Text(
-                "Goods For Sellers",
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+        type: BottomNavigationBarType.fixed,
 
-              SizedBox(height: 80),
+        selectedItemColor: Colors.black,
 
-              Text(
-                "MY PRINCESS STORE",
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+        unselectedItemColor: Colors.grey,
 
-            ],
+        onTap: (index){
+          setState(() {
+            currentIndex = index;
+          });
+        },
+
+        items: const [
+
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Home",
           ),
-        ),
+
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_bag),
+            label: "Orders",
+          ),
+
+          BottomNavigationBarItem(
+            icon: Icon(Icons.inventory),
+            label: "Stocks",
+          ),
+
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_balance_wallet),
+            label: "Income",
+          ),
+
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: "Account",
+          ),
+
+        ],
       ),
     );
   }
@@ -109,16 +99,22 @@ class _SplashScreenState extends State<SplashScreen>
 
 
 class HomePage extends StatelessWidget {
+
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
+
       backgroundColor: Colors.white,
 
       appBar: AppBar(
+
         backgroundColor: Colors.white,
+
         elevation: 0,
+
         title: const Text(
           "MY PRINCESS STORE",
           style: TextStyle(
@@ -128,14 +124,64 @@ class HomePage extends StatelessWidget {
         ),
       ),
 
-      body: const Center(
-        child: Text(
-          "Welcome Sir\nPRINCE SHARMA",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
-          ),
+
+      body: Padding(
+
+        padding: const EdgeInsets.all(16),
+
+        child: Column(
+
+          crossAxisAlignment: CrossAxisAlignment.start,
+
+          children: [
+
+            const Text(
+              "PRINCE SHARMA",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height:20),
+
+
+            const Text(
+              "WELCOME SIR",
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+
+            const SizedBox(height:30),
+
+
+            Card(
+              child: ListTile(
+                title: Text("Today Orders"),
+                subtitle: Text("0"),
+              ),
+            ),
+
+
+            Card(
+              child: ListTile(
+                title: Text("Delivered Orders"),
+                subtitle: Text("0"),
+              ),
+            ),
+
+
+            Card(
+              child: ListTile(
+                title: Text("Low Stocks Alerts"),
+                subtitle: Text("No alerts"),
+              ),
+            ),
+
+          ],
         ),
       ),
     );
